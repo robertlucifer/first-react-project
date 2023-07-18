@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
 
-function App() {
+export default function App() {
+  const [advice, setadvice] = useState("");
+  const [count, setcount] = useState(0);
+  console.log(setadvice);
+  console.log(advice);
+  async function getAdvice() {
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const advice = await res.json();
+    setadvice(advice.slip.advice);
+    setcount((c) => c + 1);
+  }
+  useEffect(function () {
+    getAdvice();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>{advice}</h1>
+      <button onClick={getAdvice}>Get Advice</button>
+      <Msg count={count} />
     </div>
   );
 }
-
-export default App;
+function Msg(props) {
+  return (
+    <p>
+      You have read <b>{props.count}</b> of advices
+    </p>
+  );
+}
